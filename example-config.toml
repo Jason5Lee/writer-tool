@@ -1,0 +1,173 @@
+# NOTE: All `api-url` properties expect the base URL of an OpenAI-compatible API.
+# The completions endpoint is assumed to be at `{api-url}/v1/chat/completions`.
+
+# -----------------------------------------------------------------------------
+# Writer settings.
+# For translate command, `writer.prompt.instruction` is required if default-prompt is enabled
+# or has-instruction is true.
+# -----------------------------------------------------------------------------
+[writer]
+
+# The API base URL for the writer model.
+api-url = "..."
+
+# (Optional) The API key to authorize requests to the writer endpoint.
+api-key = "..."
+
+# The model to use for content generation.
+model = "gpt-4o"
+
+# Prompt configuration for the writer.
+[writer.prompt]
+
+# System prompt for the model.
+system = "..."
+
+# Main instruction for the writing task.
+instruction = "..."
+
+# (Optional) Additional requirement for the writing task.
+# The user prompt is formed by combining instruction and requirement.
+# Requirement is separated so it can be excluded from translation prompts, as it applies only to writing.
+requirement = "..."
+
+# (Optional) The `reasoning` property for the writer.
+# Provide a valid JSON string. This will be included as the `reasoning` field in the request payload sent to the API.
+reasoning = "{\"effort\":\"medium\"}"
+
+# The retry method to use for the writer.
+# Note: all retry configurations use this same setting.
+[writer.retry]
+
+# Whether to enable retry.
+enable = true
+
+# The duration of the retry in milliseconds.
+# This property can also be set to "backoff" to use a backoff strategy.
+duration = 1000
+
+# (Optional) Maximum number of retries.
+max-retries = 3
+
+# -----------------------------------------------------------------------------
+# Configuration for detecting if the writer's output is a refusal (e.g., "I can't help with that").
+# -----------------------------------------------------------------------------
+[reject-detection]
+
+# Whether to enable rejection detection.
+enable = true
+
+# The API base URL for the rejection detection model.
+api-url = "..."
+
+# (Optional) The API key for the rejection detection endpoint.
+api-key = "..."
+
+# The model used for rejection detection.
+model = "..."
+
+# The number of initial characters from the writer's output to analyze.
+sample-length = 1000
+
+# The confidence threshold (0-100) for accepting the output.
+# The output is accepted if the detection model's confidence score (that the text is _not_ a refusal)
+# is greater than or equal to this value.
+threshold = 60
+
+# Optional: Provide a custom prompt for the rejection detection model.
+# The prompt must instruct the model to output a number from 0 (is a refusal) to 100 (not a refusal)
+# enclosed in <output></output> tags.
+[reject-detection.custom-prompt]
+
+# Whether to enable custom prompt for rejection detection.
+enable = true
+
+# Text to prepend to the content sample being analyzed.
+prompt-before = ""
+
+# Text to append to the content sample being analyzed.
+prompt-after = ""
+
+# (Optional) The `reasoning` property for the rejection detection.
+# Provide a valid JSON string. This will be included as the `reasoning` field in the request payload sent to the API.
+reasoning = "{\"effort\":\"medium\"}"
+
+# The retry method to use for the rejection detection.
+# Refer to the writer.retry section for more details.
+[reject-detection.retry]
+enable = true
+duration = 1000
+max-retries = 3
+
+# -----------------------------------------------------------------------------
+# Post-processing step to translate the generated content.
+# Useful when a model performs best in one language (e.g., English) but the desired
+# output is in another.
+# Required for translate command or write command with translation output.
+# -----------------------------------------------------------------------------
+[translation]
+
+# The API base URL for the translation model.
+api-url = "..."
+
+# (Optional) The API key for the translation endpoint.
+api-key = "..."
+
+# The model used for translation.
+model = "..."
+
+# The maximum number of characters per translation request.
+# Content is split into segments by newline. If a single line exceeds this limit,
+# it is sent as its own segment.
+max-characters-per-segment = 1000
+
+# If `true`, the final output will contain only the translated text. Defaults to `false`.
+skip-original = false
+
+# A delimiter used when `skip-original` is `false` and the line counts of the
+# original and translated texts do not match. It wraps the entire translated block.
+lines-mismatched-delimiter = "============== LINES MISMATCHED =============="
+
+# --- Translation Prompt Options (enable one) ---
+# Option 1: Use the default translation prompt template.
+[translation.default-prompt]
+
+# Whether to enable default prompt for translation.
+enable = true
+
+# The target language for the translation (e.g., "Simplified Chinese").
+language = "Simplified Chinese"
+
+# Option 2: Use a fully custom translation prompt.
+# The prompt must instruct the model to enclose the final translated content
+# within <translated></translated> tags.
+[translation.custom-prompt]
+
+# Whether to enable custom prompt for translation.
+enable = true
+
+# Whether to include the instruction in the custom prompt.
+has-instruction = true
+
+# If `has-instruction` is `true`, the segment prepended to the main custom prompt with the instruction.
+# The full prompt is assembled as:
+# {prompt-before-instruction}\n{instruction}\n{prompt-before}\n{content}\n{prompt-after}
+prompt-before-instruction = ""
+
+# The main prompt segment that precedes the content to be translated.
+prompt-before = ""
+
+# The main prompt segment that follows the content to be translated.
+prompt-after = ""
+
+# (Optional) The `reasoning` property for the translation.
+# Provide a valid JSON string. This will be included as the `reasoning` field in the request payload sent to the API.
+reasoning = "{\"effort\":\"medium\"}"
+
+# The retry method to use for the translation.
+# Refer to the writer.retry section for more details.
+# Note: each translation of a segment is independent, so the backoff durations and max retries are reset for each segment.
+[translation.retry]
+enable = true
+duration = 1000
+max-retries = 3
