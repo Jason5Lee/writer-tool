@@ -58,7 +58,7 @@ async fn main() -> anyhow::Result<()> {
             translated,
         } => {
             let config_content = tokio::fs::read_to_string(&config).await?;
-            let config = command_entry::get_config(&config_content)?;
+            let config = toml::from_str(&config_content)?;
 
             let translate = if translated.is_some() {
                 Some(command_entry::get_translation(&config)?)
@@ -83,7 +83,7 @@ async fn main() -> anyhow::Result<()> {
             output,
         } => {
             let config_content = tokio::fs::read_to_string(&config).await?;
-            let config = command_entry::get_config(&config_content)?;
+            let config = toml::from_str(&config_content)?;
 
             let input_content = tokio::fs::read_to_string(&input).await?;
             let translation = command_entry::get_translation(&config)?;

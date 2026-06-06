@@ -1,5 +1,6 @@
 use serde_json::Value;
 
+use crate::Logger;
 use crate::ai_actor::AIActor;
 use crate::config::{self, Config};
 use crate::prompt_surrounding::PromptSurrounding;
@@ -7,11 +8,6 @@ use crate::rejection_detection::RejectionDetection;
 use crate::retrier::Retrier;
 use crate::translation::Translation;
 use crate::writing::Writing;
-use crate::Logger;
-
-pub fn get_config(content: &str) -> anyhow::Result<Config> {
-    Ok(toml::from_str(content)?)
-}
 
 pub async fn run_writer(logger: &dyn Logger, config: &Config) -> anyhow::Result<String> {
     let writer = config
@@ -132,7 +128,9 @@ pub fn get_translation(config: &Config) -> anyhow::Result<Translation> {
             .filter(|s| !s.is_empty())
             .is_none()
     {
-        anyhow::bail!("`translation` section of the config must have a lines-mismatched-delimiter specified when `skip-original` is false");
+        anyhow::bail!(
+            "`translation` section of the config must have a lines-mismatched-delimiter specified when `skip-original` is false"
+        );
     }
 
     let retrier = get_retrier_by_config(translation.retry.as_ref())?;
@@ -147,7 +145,9 @@ pub fn get_translation(config: &Config) -> anyhow::Result<Translation> {
             .as_ref()
             .is_some_and(|cp| cp.enable)
         {
-            anyhow::bail!("`translation` section of the config cannot have both `default-prompt` and `custom-prompt` enabled");
+            anyhow::bail!(
+                "`translation` section of the config cannot have both `default-prompt` and `custom-prompt` enabled"
+            );
         }
         let dp = translation.default_prompt.as_ref().unwrap();
         let language = dp
