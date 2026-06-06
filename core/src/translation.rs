@@ -2,10 +2,10 @@ use reqwest::Client;
 use serde_json::Value;
 use std::fmt::Write as _;
 
+use crate::Logger;
 use crate::ai_actor::AIActor;
 use crate::prompt_surrounding::PromptSurrounding;
 use crate::retrier::Retrier;
-use crate::Logger;
 
 pub struct Translation {
     ai_actor: AIActor,

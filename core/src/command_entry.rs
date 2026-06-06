@@ -108,9 +108,7 @@ pub async fn run_writer(logger: &dyn Logger, config: &Config) -> anyhow::Result<
         prompt.requirement.as_deref().unwrap_or("")
     );
     let writing = Writing::new(writer_actor, writer_reasoning, retrier, rejection_detection);
-    let client = reqwest::Client::builder()
-        .timeout(std::time::Duration::from_secs(300))
-        .build()?;
+    let client = reqwest::Client::builder().build()?;
     writing
         .invoke(logger, &client, prompt.system.as_deref(), &user)
         .await

@@ -50,11 +50,14 @@ impl AIActor {
             reasoning: reasoning.cloned(),
         };
 
-        let mut req = client.post(&self.completions_endpoint).json(&request);
-        if let Some(key) = &self.key {
-            if !key.is_empty() {
-                req = req.bearer_auth(key);
-            }
+        let mut req = client
+            .post(&self.completions_endpoint)
+            .timeout(std::time::Duration::from_secs(300))
+            .json(&request);
+        if let Some(key) = &self.key
+            && !key.is_empty()
+        {
+            req = req.bearer_auth(key);
         }
 
         let response = req.send().await?.error_for_status()?;

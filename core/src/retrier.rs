@@ -1,6 +1,5 @@
 use std::future::Future;
-
-use tokio::time::Duration;
+use std::time::Duration;
 
 use crate::Logger;
 
@@ -29,7 +28,7 @@ impl Retrier {
                         Ok(result) => return Ok(result),
                         Err(e) => {
                             logger.log(&format!("[{context}] {e}. Retrying in {duration}ms..."));
-                            tokio::time::sleep(Duration::from_millis(duration)).await;
+                            sleep_for(Duration::from_millis(duration)).await;
                         }
                     }
                 }
@@ -55,6 +54,47 @@ impl Retrier {
             None => Box::new(move || Box::new(BackoffDurationMillis.into_iter())),
         }
     }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+async fn sleep_for(duration: Duration) {
+    tokio::time::sleep(duration).await;
+}
+
+#[cfg(target_arch = "wasm32")]
+async fn sleep_for(duration: Duration) {
+    use js_sys::{Function, Promise, Reflect};
+    use wasm_bindgen::prelude::Closure;
+    use wasm_bindgen::{JsCast, JsValue};
+    use wasm_bindgen_futures::JsFuture;
+
+    let promise = Promise::new(&mut |resolve, reject| {
+        let callback = Closure::once(move || {
+            let _ = resolve.call0(&JsValue::UNDEFINED);
+        });
+
+        let global = js_sys::global();
+        let timeout_result = Reflect::get(&global, &JsValue::from_str("setTimeout"))
+            .and_then(JsValue::dyn_into::<Function>)
+            .and_then(|set_timeout| {
+                set_timeout
+                    .call2(
+                        &global,
+                        callback.as_ref(),
+                        &JsValue::from_f64(duration.as_millis() as f64),
+                    )
+                    .map(|_| ())
+            });
+
+        match timeout_result {
+            Ok(()) => callback.forget(),
+            Err(error) => {
+                let _ = reject.call1(&JsValue::UNDEFINED, &error);
+            }
+        }
+    });
+
+    let _ = JsFuture::from(promise).await;
 }
 
 struct RepeatDurationIter {

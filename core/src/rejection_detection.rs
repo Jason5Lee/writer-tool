@@ -1,10 +1,10 @@
 use reqwest::Client;
 use serde_json::Value;
 
+use crate::Logger;
 use crate::ai_actor::AIActor;
 use crate::prompt_surrounding::PromptSurrounding;
 use crate::retrier::Retrier;
-use crate::Logger;
 
 pub struct RejectionDetection {
     pub ai_actor: AIActor,

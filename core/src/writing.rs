@@ -1,10 +1,10 @@
 use reqwest::Client;
 use serde_json::Value;
 
+use crate::Logger;
 use crate::ai_actor::AIActor;
 use crate::rejection_detection::RejectionDetection;
 use crate::retrier::Retrier;
-use crate::Logger;
 
 pub struct Writing {
     ai_actor: AIActor,
@@ -41,10 +41,10 @@ impl Writing {
                     .ai_actor
                     .get_completion(client, system, user, self.reasoning.as_ref())
                     .await?;
-                if let Some(rd) = &self.rejection_detection {
-                    if rd.invoke(logger, client, &content).await? {
-                        anyhow::bail!("Rejection detected");
-                    }
+                if let Some(rd) = &self.rejection_detection
+                    && rd.invoke(logger, client, &content).await?
+                {
+                    anyhow::bail!("Rejection detected");
                 }
                 Ok(content)
             })
