@@ -1,0 +1,9 @@
+{
+	"id": "writer-tool-obsidian-plugin",
+	"name": "Writer Tool",
+	"version": "0.1.0",
+	"minAppVersion": "1.13.0",
+	"description": "Run Writer Tool write and translation tasks from an open Obsidian note.",
+	"author": "Writer Tool",
+	"isDesktopOnly": false
+}

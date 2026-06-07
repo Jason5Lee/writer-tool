@@ -1,0 +1,77 @@
+.writer-tool-profile-modal .setting-item,
+.writer-tool-task-modal .setting-item,
+.writer-tool-settings .setting-item,
+.writer-tool-log-modal .setting-item {
+	border-top: 0;
+}
+
+.writer-tool-profile-modal .setting-item-heading,
+.writer-tool-settings .setting-item-heading {
+	margin-left: 0;
+	margin-top: 1rem;
+	margin-inline-start: 0;
+	padding-left: 0;
+	padding-inline-start: 0;
+}
+
+.writer-tool-profile-modal .setting-item-heading .setting-item-info,
+.writer-tool-settings .setting-item-heading .setting-item-info {
+	margin-left: 0;
+	margin-inline-start: 0;
+	padding-left: 0;
+	padding-inline-start: 0;
+}
+
+.writer-tool-profile-modal .setting-item-heading .setting-item-name,
+.writer-tool-settings .setting-item-heading .setting-item-name {
+	font-size: var(--font-ui-large);
+	font-weight: var(--font-semibold);
+	line-height: 1.35;
+}
+
+.writer-tool-textarea {
+	min-height: 6rem;
+	width: min(32rem, 100%);
+}
+
+.writer-tool-empty-state,
+.writer-tool-log-empty {
+	color: var(--text-muted);
+	margin: 0.75rem 0;
+}
+
+.writer-tool-validation-errors {
+	color: var(--text-error);
+	font-size: var(--font-ui-small);
+	margin: 0.75rem 0;
+}
+
+.writer-tool-log {
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	max-height: 55vh;
+	overflow: auto;
+	padding: 0.75rem;
+}
+
+.writer-tool-log-entry {
+	display: grid;
+	gap: 0.5rem;
+	grid-template-columns: 5.5rem minmax(0, 1fr);
+	padding: 0.25rem 0;
+}
+
+.writer-tool-log-time {
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.writer-tool-log-message {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.writer-tool-log-entry-error .writer-tool-log-message {
+	color: var(--text-error);
+}

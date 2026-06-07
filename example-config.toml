@@ -1,14 +1,17 @@
-# NOTE: All `api-url` properties expect the base URL of an OpenAI-compatible API.
-# The completions endpoint is assumed to be at `{api-url}/v1/chat/completions`.
+# NOTE: All `api-url` values must be the base URL of an OpenAI-compatible API.
+# Do not include `/v1`; Writer Tool appends `/v1/chat/completions` automatically.
 
 # -----------------------------------------------------------------------------
 # Writer settings.
-# For translate command, `writer.prompt.instruction` is required if default-prompt is enabled
-# or has-instruction is true.
+# The writer instruction describes what content should be created.
+# Translation can reuse the instruction as context so the translated text preserves
+# the original writing goal. The default translation prompt includes it automatically;
+# a custom translation prompt includes it only when has-instruction is true.
+# The writer requirement is used only for writing and is not included in translation prompts.
 # -----------------------------------------------------------------------------
 [writer]
 
-# The API base URL for the writer model.
+# The OpenAI-compatible API base URL for the writer model. Do not include `/v1`.
 api-url = "..."
 
 # (Optional) The API key to authorize requests to the writer endpoint.
@@ -23,12 +26,14 @@ model = "gpt-4o"
 # System prompt for the model.
 system = "..."
 
-# Main instruction for the writing task.
+# Main instruction for the writing task. Translation prompts can also use this as
+# context about the source text's original goal.
 instruction = "..."
 
 # (Optional) Additional requirement for the writing task.
 # The user prompt is formed by combining instruction and requirement.
-# Requirement is separated so it can be excluded from translation prompts, as it applies only to writing.
+# Requirement is separated from instruction because it applies only to writing and
+# is not included in translation prompts.
 requirement = "..."
 
 # (Optional) The `reasoning` property for the writer.
@@ -57,7 +62,7 @@ max-retries = 3
 # Whether to enable rejection detection.
 enable = true
 
-# The API base URL for the rejection detection model.
+# The OpenAI-compatible API base URL for the rejection detection model. Do not include `/v1`.
 api-url = "..."
 
 # (Optional) The API key for the rejection detection endpoint.
@@ -107,7 +112,7 @@ max-retries = 3
 # -----------------------------------------------------------------------------
 [translation]
 
-# The API base URL for the translation model.
+# The OpenAI-compatible API base URL for the translation model. Do not include `/v1`.
 api-url = "..."
 
 # (Optional) The API key for the translation endpoint.
@@ -130,6 +135,7 @@ lines-mismatched-delimiter = "============== LINES MISMATCHED =============="
 
 # --- Translation Prompt Options (enable one) ---
 # Option 1: Use the default translation prompt template.
+# The default template includes the writer instruction as context.
 [translation.default-prompt]
 
 # Whether to enable default prompt for translation.
@@ -146,7 +152,8 @@ language = "Simplified Chinese"
 # Whether to enable custom prompt for translation.
 enable = true
 
-# Whether to include the instruction in the custom prompt.
+# Whether to include the writer instruction in the custom prompt, giving translation
+# context about the source text's original goal.
 has-instruction = true
 
 # If `has-instruction` is `true`, the segment prepended to the main custom prompt with the instruction.

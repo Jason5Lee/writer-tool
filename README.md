@@ -1,6 +1,6 @@
 # Writer Tool
 
-A tool for writing content using AI. It has rejection (e.g. "I can't help with that") detection and translation capabilities.
+A tool for writing content using AI. It has rejection (e.g. "I can't help with that") detection and translation capabilities. There is also an Obsidian plugin that reuses the core logic via WASM.
 
 ## Usage
 
@@ -12,4 +12,4 @@ writer -c config.toml -o output.txt -ot translated.txt
 
 ## TODO
 
-- [ ] Obsidian Plugin based on WASM
+- [ ] Solve some issues in Obsidian plugin.
