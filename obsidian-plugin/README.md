@@ -31,24 +31,24 @@ Prerequisites:
 From this folder:
 
 ```bash
-npm install
-npm run build:wasm
-npm run build
+pnpm install
+pnpm run build:wasm
+pnpm run build
 ```
 
 Or run both build steps:
 
 ```bash
-npm run build:all
+pnpm run build:all
 ```
 
-`npm run build:wasm` builds the Rust crate in `../wasm` with `wasm-pack` and writes the generated package to:
+`pnpm run build:wasm` builds the Rust crate in `../wasm` with `wasm-pack` and writes the generated package to:
 
 ```text
 obsidian-plugin/wasm/pkg
 ```
 
-`npm run build` type-checks the TypeScript and bundles `src/main.ts` to `main.js`.
+`pnpm run build` type-checks the TypeScript and bundles `src/main.ts` to `main.js`.
 
 ## Manual install
 
@@ -74,17 +74,17 @@ Reload Obsidian and enable **Writer Tool** from **Settings → Community plugins
 Run the TypeScript bundler in watch mode:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 When the Rust WASM bindings change, rebuild them:
 
 ```bash
-npm run build:wasm
+pnpm run build:wasm
 ```
 
 Run linting:
 
 ```bash
-npm run lint
+pnpm run lint
 ```
